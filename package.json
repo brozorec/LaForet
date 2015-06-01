@@ -1,0 +1,11 @@
+{
+	"name": "foret",
+	"main": "server.js",
+	"dependencies": {
+		"express": "",
+		"express-session": "",
+		"body-parser": "",
+		"mongodb": "",
+		"mongoose": ""
+	}
+}

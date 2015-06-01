@@ -1,0 +1,101 @@
+.logo-home {
+	height: 60px;
+	margin-top: -7px;
+}
+
+.navbar-default{
+  background-image: url('img/navbar_background.jpg');
+  border-width:1px;  
+  border-bottom-style:ridge;
+  /*background-color: transparent;*/
+}
+
+.btn-signup {
+   outline:0;
+   border:none;
+   border-top:none;
+   border-bottom:none;
+   border-left:none;
+   border-right:none;
+}
+
+.head-box {
+  /*width: 200px;*/
+  height: 200px;
+  background: url('img/navbar_background.jpg');
+
+  text-align: center;
+  font-size: 25px;
+  font-family: Bariol;
+  color: #EDEDED;
+
+  padding-top: 40%;
+}
+
+.right-box {
+  border-top-left-radius: 80%;
+  border-bottom-right-radius: 80%;
+  transform: rotate(10deg);
+}
+
+.left-box {
+  border-bottom-left-radius: 80%;
+  border-top-right-radius: 80%;
+  /*-webkit-transform: rotate(340deg);*/
+  transform: rotate(350deg);
+}
+
+@font-face {
+  font-family: Bariol;
+  src: url(Bariol.ttf);
+}
+
+.navbar-link {
+  /*width: 200px;*/
+  /*border:  solid;*/
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold; 
+  visibility: hidden;
+}
+
+#navbar-link-text {
+  font-family: Bariol;
+  color: #EDEDED;
+}
+
+.content-head {
+  /*background: url('img/team-big.jpg') no-repeat  ;*/
+  /*-webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://media02.hongkiat.com/oversized-background-image-design/bg.jpg', sizingMethod='scale')";
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.http://media02.hongkiat.com/oversized-background-image-design/bg.jpg', sizingMethod='scale');*/
+  /*background-attachment:fixed;*/
+  background-color: #DBF9BD;
+  padding-top: 10%;
+  height: 800px;
+}
+
+.content {
+  /*height: 700px;*/
+  padding-top: 5%;
+}
+
+.game {
+  background-color: #E4E2F7;
+  padding-bottom: 5%;
+}
+
+.team {
+  background-color: #A5E2A7;
+}
+
+.forum {
+  background-color: #C7E2B7;
+}
+
+.contact {
+  background-color: #D9E2D7;
+}
