@@ -1,0 +1,30 @@
+<div ui-view="form"></div>
+<div class="container-fluid content-head collapse navbar-collapse">
+	<div class="row">
+		<div class="col-xs-offset-3 col-xs-2 col-md-offset-3 col-md-2 col-lg-offset-3 col-lg-2">
+			<a class="head-box left-box thumbnail" href="#part-game" box>Game</a>
+		</div>
+	<!-- </div>
+	<div class="row"> -->
+		<div class="col-xs-offset-0 col-xs-2 col-md-offset-0 col-md-2 col-lg-offset-0 col-lg-2">
+			<a class="head-box right-box thumbnail" href="#part-team" box>Team</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-offset-1 col-xs-2 col-md-offset-1 col-md-2 col-lg-offset-1 col-lg-2">
+			<a class="head-box left-box thumbnail" href="#part-forum" box>Forum</a>
+		</div>
+		<div class="col-xs-offset-4 col-xs-2 col-md-offset-4 col-md-2 col-lg-offset-4 col-lg-2">
+			<a class="head-box right-box thumbnail" href="#part-conta" box>Contact</a>
+		</div>
+	</div>
+</div>
+
+<div id="part-forum" ui-view="forum"></div>
+
+<div id="part-game" ui-view="game"></div>
+
+<div id="part-team" class="container-fluid content team" style="text-align: center">
+	<h1>Team</h1>
+</div>
+<div id="part-contact" ui-view="contact"></div>
