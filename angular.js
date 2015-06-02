@@ -92,7 +92,6 @@
 					})
 
 					angular.element($window).bind('scroll', function () {
-						console.log(degree)
 						position = element[0].getBoundingClientRect().top
 					})
 				}
@@ -105,9 +104,7 @@
 				link: function (scope, element, attrs) {
 					angular.element($window).bind('scroll', function () {
 					if (attrs.pos > this.pageYOffset)
-					{
 						element.css('visibility', 'hidden')
-					}
 					else
 						element.css('visibility', 'visible')
 					})
@@ -137,7 +134,7 @@
 
 			header.positions = PositionService.positions
 			AuthService.getUser().then( function (res) {
-				// console.log(res)
+				console.log(res)
 				if (res == 'ko')
 					$state.go('app');
 				else
@@ -167,8 +164,7 @@
 						$state.go('app')
 						$modalInstance.dismiss('cancel')
 					}
-				},
-				size: 'lg'
+				}
 			})
 		})
 
@@ -181,6 +177,11 @@
 					$scope.wrongCredentials = false
 
 					$scope.newUser = function (userData) {
+						if ($scope.passwordrep !== $scope.userData.password) {
+							$scope.wrongCredentials = true
+							$scope.message = 'Your password does not match!'
+							return
+						}
 						$http.post('/signup', userData)
 						.success(function (data, status, headers, config) {
 							$state.go('app.signed', {user: data.nickname});
@@ -195,21 +196,56 @@
 						$state.go('app')
 						$modalInstance.dismiss('cancel')
 					}
-				},
-				size: 'lg'
+				}
 			})
 		})
 
-		.controller("SignedCtrl", function ($stateParams, $state, $http, $window, $scope, PositionService) {
+		.controller("SignedCtrl", function ($stateParams, $state, $http, $scope, $modal) {
 			var signed = this;
 
-			signed.user = $stateParams.user;
-			signed.logout = function () {
+			$scope.user = $stateParams.user;
+			$scope.logout = function () {
 				$http.get('/logout')
 					.then(function (res) {
 						$state.go('app')
 					})
 			}
+
+			$scope.profile = function () {
+				$modal.open({
+					templateUrl: 'templates/profile.html',
+					controller: 'ProfileCtrl'
+				})
+			}
+		})
+
+		.controller('ProfileCtrl', function ($scope, $modalInstance, $state, $http) {
+			$scope.userData = {}
+
+			$scope.changePassword = function (userData, newPwdRep) {
+				if (newPwdRep !== userData.newPwd) {
+					$scope.wrongCredentials = true
+					$scope.message = 'Your password does not match!'
+					return
+				}
+				$http.post('/changepassword', userData)
+				.success(function (data, status, headers, config) {
+					$modalInstance.close(userData)
+					$state.go('app.signed', {user: data.nickname})
+				})
+				.error(function (data, status, headers, config) {
+					$scope.wrongCredentials = true
+					$scope.message = data
+				});
+			}
+			$scope.cancel = function () {
+				$state.go('app')
+				$modalInstance.dismiss('cancel')
+			}
+		})
+
+		.controller('ContactCtrl', function () {
+			
 		})
 })();
 
