@@ -24,6 +24,7 @@ mongoose.connection.on('error', function () {
 })
 var User = mongoose.model('foret', {
 	nickname: String,
+	userRole: String,
 	email: String,
 	password: String
 });
@@ -33,6 +34,13 @@ app.get('/auth', function (req, res) {
 		res.send(req.session.nickname)
 	else
 		res.send('ko')
+})
+
+app.post('/login', function (req, res) {
+	User.find(req.body, function (err, user) {
+		// console.log(user)
+		res.send(user[0])
+	});
 })
 
 app.get('/all', function (req, res) {
@@ -58,7 +66,7 @@ app.post('/signup', function(req, res) {
 	console.log(req.body)
 	User.find({$or: [
 		{nickname: req.body.nickname},
-		{email: req.body.email}]}, function (err, user) {
+		{email: req.body.email} ] }, function (err, user) {
 			console.log(user)
 			if (user.length == 0) {
 				User.create(req.body, function (err, user) {
@@ -78,8 +86,9 @@ app.post('/signup', function(req, res) {
 
 app.post('/signin', function (req, res) {
 
-	console.log(req.body)
+	// console.log(req.body)
 	User.find(req.body, function (err, user) {
+		// console.log(user)
 		if (user.length == 0)
 			res.status(422).send('Invalid nickname or password!');
 		else {

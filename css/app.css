@@ -4,8 +4,8 @@
 }
 
 .navbar-default{
-  background-image: url('img/navbar_background.jpg');
-  border-width:1px;  
+  background-image: url('../img/navbar_background.jpg');
+  border-width:1px;
   border-bottom-style:ridge;
   /*background-color: transparent;*/
 }
@@ -22,7 +22,7 @@
 .head-box {
   /*width: 200px;*/
   height: 200px;
-  background: url('img/navbar_background.jpg');
+  background: url('../img/navbar_background.jpg');
 
   text-align: center;
   font-size: 25px;
@@ -55,7 +55,7 @@
   /*border:  solid;*/
   text-align: center;
   font-size: 25px;
-  font-weight: bold; 
+  font-weight: bold;
   visibility: hidden;
 }
 
@@ -73,7 +73,7 @@
   -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://media02.hongkiat.com/oversized-background-image-design/bg.jpg', sizingMethod='scale')";
   filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.http://media02.hongkiat.com/oversized-background-image-design/bg.jpg', sizingMethod='scale');*/
   /*background-attachment:fixed;*/
-  background-color: #DBF9BD;
+  background-color: #EFEFEF;
   padding-top: 10%;
   height: 800px;
 }
