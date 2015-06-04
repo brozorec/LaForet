@@ -18,7 +18,7 @@ app.use(session({
 
 app.listen(8080);
 
-mongoose.connect('mongodb://localhost/data');
+mongoose.connect('mongodb://foretadmin:jesuisdelaforet@ds043002.mongolab.com:43002/foret');
 mongoose.connection.on('error', function () {
 	console.log('mongoose connection error')
 })
@@ -57,7 +57,7 @@ app.post('/signup', function(req, res) {
 
 	console.log(req.body)
 	User.find({$or: [
-		{nickname: req.body.nickname}, 
+		{nickname: req.body.nickname},
 		{email: req.body.email}]}, function (err, user) {
 			console.log(user)
 			if (user.length == 0) {
