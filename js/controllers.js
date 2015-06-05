@@ -1,4 +1,8 @@
 angular.module('foretControllers', ['foretServices'])
+	// .controller('AppCtrl', function (USER_ROLES, Authorization) {
+
+	// })
+
 	.controller('ContentCtrl', function () {
 		var content = this
 
@@ -16,20 +20,17 @@ angular.module('foretControllers', ['foretServices'])
 		]
 	})
 
-	.controller("HeaderCtrl", function HeaderCtrl ($http, $state, AuthService, PositionService) {
+	.controller("HeaderCtrl", function HeaderCtrl ($http, $state, Session, Position) {
 		var header = this
 
-		header.positions = PositionService.positions
-		AuthService.getUser({nickname: 'qw', password: 'er'}).then( function (res) {
-			// console.log(res._id)
-			// if (res == 'ko')
-			// 	$state.go('app');
-			// else
-			// 	$state.go('app.signed', {user: res});
-		})
+		header.positions = Position.positions
+		// if (Session.id)
+		// 	$state.go('app.signed')
+		// else
+		// 	$state.go('app')
 	})
 
-	.controller('SigninCtrl', function ($http, $state, $modal) {
+	.controller('SigninCtrl', function ($http, $state, $modal, Session, Authentication) {
 		var modalInst = $modal.open({
 			templateUrl: 'templates/signin.html',
 			controller: function ($scope, $modalInstance) {
@@ -37,15 +38,16 @@ angular.module('foretControllers', ['foretServices'])
 				$scope.wrongCredentials = false
 
 				$scope.logUser = function (userData) {
-					$http.post('/signin', userData)
-					.success(function (data, status, headers, config) {
-						$state.go('app.signed', {user: data.nickname});
-						$modalInstance.close(userData)
+					Authentication.getUser(userData).then(function () {
+						if (Authentication.isAuthenticated) {
+							$state.go('app.signed');
+							$modalInstance.close()
+						}
+						else {
+							$scope.wrongCredentials = true
+							$scope.message = 'Invalid nickname or password!'
+						}
 					})
-					.error(function (data, status, headers, config) {
-						$scope.wrongCredentials = true
-						$scope.message = data
-					});
 				}
 				$scope.cancel = function () {
 					$state.go('app')
@@ -87,10 +89,11 @@ angular.module('foretControllers', ['foretServices'])
 		})
 	})
 
-	.controller("SignedCtrl", function ($stateParams, $state, $http, $scope, $modal) {
+	.controller("SignedCtrl", function ($stateParams, $state, $http, $scope, $modal, Session) {
 		var signed = this;
 
-		$scope.user = $stateParams.user;
+		// $scope.user = $stateParams.user;
+		$scope.user = Session.userNickname
 		$scope.logout = function () {
 			$http.get('/logout')
 				.then(function (res) {
@@ -118,7 +121,7 @@ angular.module('foretControllers', ['foretServices'])
 			$http.post('/changepassword', userData)
 			.success(function (data, status, headers, config) {
 				$modalInstance.close(userData)
-				$state.go('app.signed', {user: data.nickname})
+				$state.go('app.signed')
 			})
 			.error(function (data, status, headers, config) {
 				$scope.wrongCredentials = true

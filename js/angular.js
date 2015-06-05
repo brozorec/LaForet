@@ -58,6 +58,7 @@
 				})
 			$locationProvider.html5Mode(true);
 		})
+
 		.constant('AUTH_EVENTS', {
 			loginSuccess: 'auth-login-success',
 			loginFailed: 'auth-login-failed',
@@ -65,9 +66,11 @@
 			notAuthenticated:'auth-not-authenticated',
 			notAuthorized: 'auth-not-authorized'
 		})
+
 		.constant('USER_ROLES', {
 			all: '*',
 			admin: 'admin',
+			member: 'member',
 			guest: 'guest'
 		})
 })();
