@@ -7,19 +7,19 @@
 					url: '/',
 					views: {
 						'header': {
-							templateUrl: 'templates/header.html',
+							templateUrl: 'templates/public/header.html',
 							controller: 'HeaderCtrl as header'
 						},
 						'content': {
-							templateUrl: 'templates/content.html',
+							templateUrl: 'templates/public/content.html',
 							controller: 'ContentCtrl as content'
 						},
 						'game@app': {
-							templateUrl: 'templates/game.html',
+							templateUrl: 'templates/public/game.html',
 							controller: 'GameCtrl as game'
 						},
 						'contact@app': {
-							templateUrl: 'templates/contact.html',
+							templateUrl: 'templates/public/contact.html',
 							controller: 'ContactCtrl as contact'
 						}
 					}
@@ -41,11 +41,11 @@
 				.state('app.signed', {
 					views: {
 						'user@app': {
-							templateUrl: 'templates/signed.html',
+							templateUrl: 'templates/private/signed.html',
 							controller: 'SignedCtrl as signed'
 						},
 						'forum@app': {
-							templateUrl: 'templates/forum.html'
+							templateUrl: 'templates/private/forum.html'
 						},
 						'user-toggled@app': {
 							template: '<li><a href="" ng-click="signed.logout()">Log Out</a></li>' +

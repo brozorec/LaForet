@@ -1,10 +1,11 @@
 angular.module('foretServices', [])
-	.service('Session', function () {
+	.service('Session', function (Auth, $http) {
 		var session = this
 
 		session.id = null
 		session.userNickname = null
 		session.userRole = null
+
 		session.create = function (sessionId, userNickname, userRole) {
 			session.id = sessionId
 			session.userNickname = userNickname
@@ -14,6 +15,19 @@ angular.module('foretServices', [])
 			session.id = null
 			session.userNickname = null
 			session.userRole = null
+		}
+		this.getSession = function () {
+			return $http.get('/session')
+				.success(function (data, status, headers, config) {
+					// console.log(data.nickname)
+					if (!!data) {
+						Auth.isAuthenticated = true
+						Auth.userNickname = data.nickname
+						Auth.userRole = data.role
+					}
+
+					// return data
+				})
 		}
 	})
 
@@ -26,19 +40,28 @@ angular.module('foretServices', [])
 		}
 	})
 
-	.service('Authentication', function ($http, Session) {
+	.service('Auth', function ($http, Request) {
 		var auth = this
 
 		auth.isAuthenticated = false
-		auth.getUser = function  (credentials) {
-			return $http.post('/login', credentials)
+		auth.userNickname = null
+		auth.userRole = 'guest'
+	})
+
+	.service('Request', function ($http) {
+		this.send = function (method, url, dataToSend) {
+			if (method === 'post') {
+				return $http.post(url, dataToSend)
 				.success(function (data, status, headers, config) {
-					if (!!data) {
-						auth.isAuthenticated = true
-						Session.create(data._id, data.user.nickname, data.user.role)
-					}
-					return data.user
+					return data
 				})
+			}
+			else if (method === 'get') {
+				return $http.get(url)
+				.success(function (data, status, headers, config) {
+					return data
+				})
+			}
 		}
 	})
 

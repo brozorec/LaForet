@@ -1,3 +1,4 @@
+
 .logo-home {
 	height: 60px;
 	margin-top: -7px;
@@ -19,7 +20,7 @@
    border-right:none;
 }
 
-.head-box {
+.head-box, .head-box:hover {
   /*width: 200px;*/
   height: 200px;
   background: url('../img/navbar_background.jpg');

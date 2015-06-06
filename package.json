@@ -6,6 +6,8 @@
 		"express-session": "",
 		"body-parser": "",
 		"mongodb": "",
-		"mongoose": ""
+		"mongoose": "",
+		"nodemailer": "0.7.1",
+		"xoauth2": ""
 	}
 }

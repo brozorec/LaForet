@@ -20,49 +20,91 @@ angular.module('foretControllers', ['foretServices'])
 		]
 	})
 
-	.controller("HeaderCtrl", function HeaderCtrl ($http, $state, Session, Position) {
+	.controller("HeaderCtrl", function HeaderCtrl ($http, $state, Session, Auth, Position) {
 		var header = this
 
 		header.positions = Position.positions
-		// if (Session.id)
-		// 	$state.go('app.signed')
-		// else
-		// 	$state.go('app')
+		Session.getSession().then(function () {
+			if (Auth.isAuthenticated)
+				$state.go('app.signed')
+			else
+				$state.go('app')
+		})
 	})
 
-	.controller('SigninCtrl', function ($http, $state, $modal, Session, Authentication) {
-		var modalInst = $modal.open({
-			templateUrl: 'templates/signin.html',
+	.controller('SigninCtrl', function ($http, $state, $modal, Session, Auth) {
+		$modal.open({
+			templateUrl: 'templates/public/signin.html',
 			controller: function ($scope, $modalInstance) {
 				$scope.userData = {};
 				$scope.wrongCredentials = false
 
 				$scope.logUser = function (userData) {
-					Authentication.getUser(userData).then(function () {
-						if (Authentication.isAuthenticated) {
-							$state.go('app.signed');
+					$http.post('/signin', userData)
+					.success(function (data, status, headers, config) {
+						if (!!data) {
+							Auth.isAuthenticated = true
+							Auth.userNickname = data.user.nickname
+							Auth.userRole = data.user.role
 							$modalInstance.close()
+							$state.go('app.signed')
 						}
 						else {
 							$scope.wrongCredentials = true
-							$scope.message = 'Invalid nickname or password!'
+							$scope.message = 'Wrong nickname or password!'
 						}
 					})
+					.error(function (data, status, headers, config) {
+						$scope.wrongCredentials = true
+						$scope.message = data
+					});
 				}
 				$scope.cancel = function () {
 					$state.go('app')
 					$modalInstance.dismiss('cancel')
 				}
+				$scope.forgottenPwd = function () {
+					$scope.cancel()
+					$modal.open({
+						templateUrl: 'templates/public/forgottenpwd.html',
+						controller: 'Forgottenpwd'
+					})
+				}
 			}
 		})
+	})
+
+	.controller('Forgottenpwd', function ($scope, $http, $state, $modalInstance) {
+		// var userData = {
+		// 	'nickname': Auth.userNickname,
+		// 	'password': '',
+		// 	'newPwd': ''
+		// }
+		$scope.userData = {}
+
+		$scope.retrievePwd = function (userData) {
+			$http.post('/forgottenpwd', userData)
+			.success(function (data, status, headers, config) {
+				$modalInstance.close()
+				$state.go('app')
+			})
+			.error(function (data, status, headers, config) {
+				$scope.wrongCredentials = true
+				$scope.message = 'No user with this email or nickname!'
+			});
+		}
+		$scope.cancel = function () {
+			$state.go('app')
+			$modalInstance.dismiss('cancel')
+		}
 	})
 
 	.controller("JoinCtrl", function JoinCtrl ($http, $state, $modal) {
 
 		var modalInst = $modal.open({
-			templateUrl: 'templates/join.html',
+			templateUrl: 'templates/public/join.html',
 			controller: function ($scope, $modalInstance) {
-				$scope.userData = {};
+				$scope.userData = {}
 				$scope.wrongCredentials = false
 
 				$scope.newUser = function (userData) {
@@ -89,11 +131,10 @@ angular.module('foretControllers', ['foretServices'])
 		})
 	})
 
-	.controller("SignedCtrl", function ($stateParams, $state, $http, $scope, $modal, Session) {
+	.controller("SignedCtrl", function ($stateParams, $state, $http, $scope, $modal, Auth) {
 		var signed = this;
 
-		// $scope.user = $stateParams.user;
-		$scope.user = Session.userNickname
+		$scope.user = Auth.userNickname
 		$scope.logout = function () {
 			$http.get('/logout')
 				.then(function (res) {
@@ -103,22 +144,28 @@ angular.module('foretControllers', ['foretServices'])
 
 		$scope.profile = function () {
 			$modal.open({
-				templateUrl: 'templates/profile.html',
+				templateUrl: 'templates/private/profile.html',
 				controller: 'ProfileCtrl'
 			})
 		}
 	})
 
-	.controller('ProfileCtrl', function ($scope, $modalInstance, $state, $http) {
-		$scope.userData = {}
+	.controller('ProfileCtrl', function ($scope, $modalInstance, $state, $http, Auth) {
+		var userData = {
+			'nickname': Auth.userNickname,
+			'password': '',
+			'newPwd': ''
+		}
 
-		$scope.changePassword = function (userData, newPwdRep) {
-			if (newPwdRep !== userData.newPwd) {
+		$scope.changePassword = function (oldPwd, newPwd, newPwdRep) {
+			if (newPwdRep !== newPwd) {
 				$scope.wrongCredentials = true
-				$scope.message = 'Your password does not match!'
+				$scope.message = 'Your passwords do not match!'
 				return
 			}
-			$http.post('/changepassword', userData)
+			userData.password = oldPwd
+			userData.newPwd = newPwd
+			$http.post('/changepwd', userData)
 			.success(function (data, status, headers, config) {
 				$modalInstance.close(userData)
 				$state.go('app.signed')
@@ -129,7 +176,7 @@ angular.module('foretControllers', ['foretServices'])
 			});
 		}
 		$scope.cancel = function () {
-			$state.go('app')
+			$state.go('app.signed')
 			$modalInstance.dismiss('cancel')
 		}
 	})
