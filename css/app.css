@@ -24,6 +24,7 @@
   /*width: 200px;*/
   height: 200px;
   background: url('../img/navbar_background.jpg');
+  border: 2px;
 
   text-align: center;
   font-size: 25px;
@@ -85,7 +86,7 @@
 }
 
 .game {
-  background-color: #E4E2F7;
+  background-color: #F1F1F1;
   padding-bottom: 5%;
 }
 

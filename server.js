@@ -35,13 +35,35 @@ var User = mongoose.model('foret', {
 });
 
 var smtpTransport = nodemailer.createTransport('SMTP', {
-	host: 'appssmtp.abv.bg',
-	port: 465,
-	secure: true,
+	service: 'Gmail',
 	auth: {
-		user: 'boyan_barakov@abv.bg',
+		user: 'boyan.barakov@gmail.com',
 		pass: ''
 	}
+})
+
+app.post('/forgottenpwd', function (req, res) {
+	User.find({
+		'user.nickname': req.body.nickname,
+		'credentials.email': req.body.email
+	}, function (err, user) {
+		if (user.length != 0) {
+			smtpTransport.sendMail({
+				to: req.body.email,
+				subject: 'Forgotten Password',
+				text: 'Your password is: ' + user[0].credentials.password
+			}, function (error, response) {
+				if (error)
+					console.log(error)
+				else {
+					console.log(response)
+					res.redirect('/')
+				}
+			})
+		}
+		else
+			res.status(422).send('Server error!')
+	})
 })
 
 app.get('/session', function (req, res) {
@@ -77,30 +99,6 @@ app.post('/changepwd', function (req, res) {
 				user[0].save()
 				res.send(user[0])
 			}
-		}
-		else
-			res.status(422).send('Server error!')
-	})
-})
-
-app.post('/forgottenpwd', function (req, res) {
-	User.find({
-		'user.nickname': req.body.nickname,
-		'credentials.email': req.body.email
-	}, function (err, user) {
-		if (user.length != 0) {
-			smtpTransport.sendMail({
-				to: req.body.email,
-				subject: 'Forgotten Password',
-				text: 'Your password is: ' + user[0].credentials.password
-			}, function (error, response) {
-				if (error)
-					console.log(error)
-				else {
-					console.log(response)
-					req.send()
-				}
-			})
 		}
 		else
 			res.status(422).send('Server error!')

@@ -6,6 +6,7 @@ angular.module('foretControllers', ['foretServices'])
 	.controller('ContentCtrl', function () {
 		var content = this
 
+		content.style = 'col-xs-offset-4 col-xs-2 col-md-offset-4 col-md-2 col-lg-offset-4 col-lg-2'
 	})
 
 	.controller('GameCtrl', function () {

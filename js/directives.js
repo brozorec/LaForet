@@ -13,6 +13,7 @@ angular.module('foretDirectives', ['foretServices'])
 
 				angular.element($window).bind('scroll', function () {
 					position = element[0].getBoundingClientRect().top
+					console.log(position)
 				})
 			}
 		}

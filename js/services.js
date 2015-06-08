@@ -40,29 +40,12 @@ angular.module('foretServices', [])
 		}
 	})
 
-	.service('Auth', function ($http, Request) {
+	.service('Auth', function ($http) {
 		var auth = this
 
 		auth.isAuthenticated = false
 		auth.userNickname = null
 		auth.userRole = 'guest'
-	})
-
-	.service('Request', function ($http) {
-		this.send = function (method, url, dataToSend) {
-			if (method === 'post') {
-				return $http.post(url, dataToSend)
-				.success(function (data, status, headers, config) {
-					return data
-				})
-			}
-			else if (method === 'get') {
-				return $http.get(url)
-				.success(function (data, status, headers, config) {
-					return data
-				})
-			}
-		}
 	})
 
 	.service('Position', function ($window) {
