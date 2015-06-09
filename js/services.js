@@ -56,3 +56,21 @@ angular.module('foretServices', [])
 			posService.positions = []
 		})
 	})
+
+	.service('Alert', function () {
+		this.alert = {
+			status: false,
+			type: '',
+			msg: ''
+		}
+		this.addAlert = function (type, msg) {
+			this.alert.status = true
+			this.alert.type = type
+			this.alert.msg = msg
+		}
+		this.closeAlert = function () {
+			this.alert.status = false
+			this.alert.type = ''
+			this.alert.msg = ''
+		}
+	})

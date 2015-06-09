@@ -13,7 +13,7 @@ angular.module('foretDirectives', ['foretServices'])
 
 				angular.element($window).bind('scroll', function () {
 					position = element[0].getBoundingClientRect().top
-					console.log(position)
+					// console.log(position)
 				})
 			}
 		}
@@ -31,4 +31,16 @@ angular.module('foretDirectives', ['foretServices'])
 				})
 			}
 		};
+	})
+
+	.directive('alertTimeout', function (Alert) {
+		return {
+			restrict: 'A',
+			link: function (scope, element, attrs) {
+				// console.log(scope.content.alertStatus())
+				scope.$watch(scope, function () {
+					console.log(scope.content.alertStatus())
+				})
+			}
+		}
 	})

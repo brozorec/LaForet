@@ -1,12 +1,19 @@
 angular.module('foretControllers', ['foretServices'])
-	// .controller('AppCtrl', function (USER_ROLES, Authorization) {
-
-	// })
-
-	.controller('ContentCtrl', function () {
+	.controller('ContentCtrl', function (Alert) {
 		var content = this
 
-		content.style = 'col-xs-offset-4 col-xs-2 col-md-offset-4 col-md-2 col-lg-offset-4 col-lg-2'
+		content.alertType = function () {
+			return Alert.alert.type
+		}
+		content.alertMsg = function () {
+			return Alert.alert.msg
+		}
+		content.alertStatus = function () {
+			return Alert.alert.status
+		}
+		content.alertClose = function () {
+			Alert.closeAlert()
+		}
 	})
 
 	.controller('GameCtrl', function () {
@@ -33,31 +40,57 @@ angular.module('foretControllers', ['foretServices'])
 		})
 	})
 
-	.controller('SigninCtrl', function ($http, $state, $modal, Session, Auth) {
+	.controller("JoinCtrl", function JoinCtrl ($http, $state, $modal, Auth, Alert) {
+
+		var modalInst = $modal.open({
+			templateUrl: 'templates/public/join.html',
+			controller: function ($scope, $modalInstance) {
+				$scope.userData = {}
+
+				$scope.newUser = function (userData) {
+					if ($scope.passwordrep !== $scope.userData.password) {
+						Alert.addAlert('danger', 'Your passwords do not match!')
+						return
+					}
+					$http.post('/signup', userData)
+					.success(function (data, status, headers, config) {
+						Auth.isAuthenticated = true
+						Auth.userNickname = data.user.nickname
+						Auth.userRole = data.user.role
+						$modalInstance.close()
+						$state.go('app.signed')
+						Alert.addAlert('success', 'Welcome to our team!')
+					})
+					.error(function (data, status, headers, config) {
+						Alert.addAlert('danger', data)
+					});
+				}
+				$scope.cancel = function () {
+					$state.go('app')
+					$modalInstance.dismiss('cancel')
+				}
+			},
+			windowClass: 'center-modal'
+		})
+	})
+
+	.controller('SigninCtrl', function ($http, $state, $modal, Session, Auth, Alert) {
 		$modal.open({
 			templateUrl: 'templates/public/signin.html',
 			controller: function ($scope, $modalInstance) {
 				$scope.userData = {};
-				$scope.wrongCredentials = false
 
 				$scope.logUser = function (userData) {
 					$http.post('/signin', userData)
 					.success(function (data, status, headers, config) {
-						if (!!data) {
-							Auth.isAuthenticated = true
-							Auth.userNickname = data.user.nickname
-							Auth.userRole = data.user.role
-							$modalInstance.close()
-							$state.go('app.signed')
-						}
-						else {
-							$scope.wrongCredentials = true
-							$scope.message = 'Wrong nickname or password!'
-						}
+						Auth.isAuthenticated = true
+						Auth.userNickname = data.user.nickname
+						Auth.userRole = data.user.role
+						$modalInstance.close()
+						$state.go('app.signed')
 					})
 					.error(function (data, status, headers, config) {
-						$scope.wrongCredentials = true
-						$scope.message = data
+						Alert.addAlert('danger', data)
 					});
 				}
 				$scope.cancel = function () {
@@ -68,68 +101,33 @@ angular.module('foretControllers', ['foretServices'])
 					$scope.cancel()
 					$modal.open({
 						templateUrl: 'templates/public/forgottenpwd.html',
-						controller: 'Forgottenpwd'
+						controller: 'Forgottenpwd',
+						windowClass: 'center-modal'
 					})
 				}
-			}
+			},
+			windowClass: 'center-modal'
 		})
 	})
 
-	.controller('Forgottenpwd', function ($scope, $http, $state, $modalInstance) {
-		// var userData = {
-		// 	'nickname': Auth.userNickname,
-		// 	'password': '',
-		// 	'newPwd': ''
-		// }
+	.controller('Forgottenpwd', function ($scope, $http, $state, $modalInstance, Alert) {
 		$scope.userData = {}
 
 		$scope.retrievePwd = function (userData) {
 			$http.post('/forgottenpwd', userData)
 			.success(function (data, status, headers, config) {
 				$modalInstance.close()
+				Alert.addAlert('success', data)
 				$state.go('app')
 			})
 			.error(function (data, status, headers, config) {
-				$scope.wrongCredentials = true
-				$scope.message = 'No user with this email or nickname!'
+				Alert.addAlert('danger', data)
 			});
 		}
 		$scope.cancel = function () {
 			$state.go('app')
 			$modalInstance.dismiss('cancel')
 		}
-	})
-
-	.controller("JoinCtrl", function JoinCtrl ($http, $state, $modal) {
-
-		var modalInst = $modal.open({
-			templateUrl: 'templates/public/join.html',
-			controller: function ($scope, $modalInstance) {
-				$scope.userData = {}
-				$scope.wrongCredentials = false
-
-				$scope.newUser = function (userData) {
-					if ($scope.passwordrep !== $scope.userData.password) {
-						$scope.wrongCredentials = true
-						$scope.message = 'Your password does not match!'
-						return
-					}
-					$http.post('/signup', userData)
-					.success(function (data, status, headers, config) {
-						$state.go('app.signed', {user: data.nickname});
-						$modalInstance.close(userData)
-					})
-					.error(function (data, status, headers, config) {
-						$scope.wrongCredentials = true
-						$scope.message = data
-					});
-				}
-				$scope.cancel = function () {
-					$state.go('app')
-					$modalInstance.dismiss('cancel')
-				}
-			}
-		})
 	})
 
 	.controller("SignedCtrl", function ($stateParams, $state, $http, $scope, $modal, Auth) {
@@ -146,12 +144,13 @@ angular.module('foretControllers', ['foretServices'])
 		$scope.profile = function () {
 			$modal.open({
 				templateUrl: 'templates/private/profile.html',
-				controller: 'ProfileCtrl'
+				controller: 'ProfileCtrl',
+				windowClass: 'center-modal'
 			})
 		}
 	})
 
-	.controller('ProfileCtrl', function ($scope, $modalInstance, $state, $http, Auth) {
+	.controller('ProfileCtrl', function ($scope, $modalInstance, $state, $http, Auth, Alert) {
 		var userData = {
 			'nickname': Auth.userNickname,
 			'password': '',
@@ -160,20 +159,19 @@ angular.module('foretControllers', ['foretServices'])
 
 		$scope.changePassword = function (oldPwd, newPwd, newPwdRep) {
 			if (newPwdRep !== newPwd) {
-				$scope.wrongCredentials = true
-				$scope.message = 'Your passwords do not match!'
+				Alert.addAlert('danger', 'Your passwords do not match!')
 				return
 			}
 			userData.password = oldPwd
 			userData.newPwd = newPwd
 			$http.post('/changepwd', userData)
 			.success(function (data, status, headers, config) {
-				$modalInstance.close(userData)
+				$modalInstance.close()
+				Alert.addAlert('success', data)
 				$state.go('app.signed')
 			})
 			.error(function (data, status, headers, config) {
-				$scope.wrongCredentials = true
-				$scope.message = data
+				Alert.addAlert('danger', data)
 			});
 		}
 		$scope.cancel = function () {

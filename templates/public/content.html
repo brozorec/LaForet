@@ -1,5 +1,13 @@
+
+<div class="row">
+	<div class="col-xs-offset-2 col-xs-8 col-md-offset-4 col-md-4" style="position: fixed; top: 5%; z-index: 10000" ng-show="content.alertStatus()" alert-timeout>
+		<alert type="{{content.alertType()}}" close="content.alertClose()">{{content.alertMsg()}}</alert>
+	</div>
+</div>
+
 <div ui-view="form"></div>
 <div class="container-fluid content-head collapse navbar-collapse">
+
 	<div class="row">
 		<div class="col-xs-offset-3 col-xs-2 col-md-offset-3 col-md-2 col-lg-offset-3 col-lg-2">
 			<a class="head-box left-box thumbnail" href="#part-game" box>Game</a>
@@ -14,7 +22,7 @@
 		<div class="col-xs-offset-1 col-xs-2 col-md-offset-1 col-md-2 col-lg-offset-1 col-lg-2">
 			<a class="head-box left-box thumbnail" href="#part-forum" box>Forum</a>
 		</div>
-		<div ng-class="content.style">
+		<div class="col-xs-offset-4 col-xs-2 col-md-offset-4 col-md-2 col-lg-offset-4 col-lg-2">
 			<a class="head-box right-box thumbnail" href="#part-contact" box>Contact</a>
 		</div>
 	</div>

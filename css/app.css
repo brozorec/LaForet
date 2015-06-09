@@ -1,3 +1,13 @@
+.center-modal .modal-dialog{
+    position: fixed;
+    top: 15%;
+    left: 30%;
+    /*right: 30%;*/
+    /*z-index: 1050;*/
+    /*width: 40%;*/
+    /*height: 40%;*/
+    /*margin-left: -10%;*/
+}
 
 .logo-home {
 	height: 60px;
