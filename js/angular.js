@@ -22,6 +22,9 @@
 							templateUrl: 'templates/public/contact.html',
 							controller: 'ContactCtrl as contact'
 						}
+					},
+					data: {
+						authorizedRoles: ['admin', 'member', 'guest']
 					}
 				})
 				.state('app.signin', {
@@ -29,6 +32,9 @@
 						'form@app': {
 							controller: 'SigninCtrl as signin'
 						}
+					},
+					data: {
+						authorizedRoles: ['admin', 'member', 'guest']
 					}
 				})
 				.state('app.join', {
@@ -36,6 +42,9 @@
 						'form@app': {
 							controller: "JoinCtrl as join"
 						}
+					},
+					data: {
+						authorizedRoles: ['admin', 'member', 'guest']
 					}
 				})
 				.state('app.signed', {
@@ -54,9 +63,40 @@
 						}
 					},
 					// url: '',
+					data: {
+						authorizedRoles: ['admin', 'member']
+					},
 					params: {user: null}
 				})
+				.state('app.signed.dashboard', {
+					views: {
+						'dashboard@app': {
+							templateUrl: 'templates/private/dashboard.html',
+							controller: 'DashboardCtrl as dashboard'
+						}
+					},
+					data: {
+						authorizedRoles: ['admin']
+					}
+				})
 			$locationProvider.html5Mode(true);
+		})
+
+		.run(function ($rootScope, $state, Auth, Alert) {
+			$rootScope.$on('$stateChangeStart', function  (event, params) {
+				var authorizedRoles = params.data.authorizedRoles
+
+				if (authorizedRoles.indexOf(Auth.userRole) == -1) {
+					event.preventDefault()
+					Alert.addAlert('danger', 'You are not authorized to access this page!')
+					$state.go('app.signin')
+				}
+			})
+			// $rootScope.$on('$stateChangeSuccess', function (event, params) {
+			// 	console.log(Auth.userRole)
+			// 	console.log(params.data.authorizedRoles)
+			// 	console.log($state.current.name)
+			// })
 		})
 
 		.constant('AUTH_EVENTS', {

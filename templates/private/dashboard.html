@@ -1,0 +1,17 @@
+<div class="container-fluid content" id="1" style="text-align: center">
+	<table class="table dashboard">
+		<tr><h3>Users</h3></tr>
+		<tr>
+			<td><h4>ID</h4></td>
+			<td><h4>Nickname</h4></td>
+			<td><h4>Role</h4></td>
+			<td><h4>Email</h4></td>
+		</tr>
+		<tr ng-repeat="user in users">
+			<td>{{user._id}}</td>
+			<td>{{user.nickname}}</td>
+			<td>{{user.role}}</td>
+			<td>{{user.email}}</td>
+		</tr>
+	</table>
+</div>

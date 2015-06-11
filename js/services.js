@@ -1,29 +1,30 @@
 angular.module('foretServices', [])
 	.service('Session', function (Auth, $http) {
-		var session = this
+		// var session = this
 
-		session.id = null
-		session.userNickname = null
-		session.userRole = null
+		// session.id = null
+		// session.userNickname = null
+		// session.userRole = null
 
-		session.create = function (sessionId, userNickname, userRole) {
-			session.id = sessionId
-			session.userNickname = userNickname
-			session.userRole = userRole
-		}
-		session.destroy = function () {
-			session.id = null
-			session.userNickname = null
-			session.userRole = null
-		}
+		// session.create = function (sessionId, userNickname, userRole) {
+		// 	session.id = sessionId
+		// 	session.userNickname = userNickname
+		// 	session.userRole = userRole
+		// }
+		// session.destroy = function () {
+		// 	session.id = null
+		// 	session.userNickname = null
+		// 	session.userRole = null
+		// }
 		this.getSession = function () {
 			return $http.get('/session')
 				.success(function (data, status, headers, config) {
 					// console.log(data.nickname)
 					if (!!data) {
-						Auth.isAuthenticated = true
-						Auth.userNickname = data.nickname
-						Auth.userRole = data.role
+						// Auth.isAuthenticated = true
+						// Auth.userNickname = data.nickname
+						// Auth.userRole = data.role
+						Auth.create(data.nickname, data.role)
 					}
 
 					// return data
@@ -46,6 +47,17 @@ angular.module('foretServices', [])
 		auth.isAuthenticated = false
 		auth.userNickname = null
 		auth.userRole = 'guest'
+
+		auth.create = function (userNickname, userRole) {
+			auth.isAuthenticated = true
+			auth.userNickname = userNickname
+			auth.userRole = userRole
+		}
+		auth.destroy = function () {
+			auth.isAuthenticated = false
+			auth.userNickname = null
+			auth.userRole = 'guest'
+		}
 	})
 
 	.service('Position', function ($window) {
@@ -58,19 +70,18 @@ angular.module('foretServices', [])
 	})
 
 	.service('Alert', function () {
-		this.alert = {
-			status: false,
-			type: '',
-			msg: ''
-		}
+		this.status = false
+		this.type = ''
+		this.msg = ''
+
 		this.addAlert = function (type, msg) {
-			this.alert.status = true
-			this.alert.type = type
-			this.alert.msg = msg
+			this.status = true
+			this.type = type
+			this.msg = msg
 		}
 		this.closeAlert = function () {
-			this.alert.status = false
-			this.alert.type = ''
-			this.alert.msg = ''
+			this.status = false
+			this.type = ''
+			this.msg = ''
 		}
 	})

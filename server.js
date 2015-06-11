@@ -49,9 +49,15 @@ app.get('/session', function (req, res) {
 		res.send()
 })
 
-app.get('/all', function (req, res) {
-	User.find({}, function (err, user) {
-		console.log(user)
+app.get('/dashboard/users', function (req, res) {
+	var usersArray = []
+
+	User.find({}, function (err, users) {
+		users.forEach(function (user) {
+			// console.log(user)
+			usersArray.push({'_id': user._id, 'nickname': user.user.nickname, 'role': user.user.role, 'email': user.credentials.email})
+		})
+		res.send(usersArray)
 	})
 })
 
@@ -80,7 +86,7 @@ app.post('/signup', function(req, res) {
 						else {
 							req.session.nickname = userData.user.nickname;
 							req.session.userRole = userData.user.role;
-							res.send(userData);
+							res.send({'nickname':req.session.nickname, 'role':req.session.userRole});
 						}
 				});
 			}
@@ -97,7 +103,7 @@ app.post('/signin', function (req, res) {
 		if (userData.length != 0) {
 			req.session.nickname = userData[0].user.nickname;
 			req.session.userRole = userData[0].user.role;
-			res.send(userData[0])
+			res.send({'nickname':req.session.nickname, 'role':req.session.userRole})
 		}
 		else
 			res.status(422).send('Invalid nickname or password!')

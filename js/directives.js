@@ -33,14 +33,17 @@ angular.module('foretDirectives', ['foretServices'])
 		};
 	})
 
-	.directive('alertTimeout', function (Alert) {
+	.directive('alertTimeout', function ($timeout, Alert) {
 		return {
 			restrict: 'A',
 			link: function (scope, element, attrs) {
-				// console.log(scope.content.alertStatus())
-				scope.$watch(scope, function () {
-					console.log(scope.content.alertStatus())
+				scope.$watch(function () {
+					return scope.content.alertStatus()
+				}, function () {
+					if (scope.content.alertStatus())
+						$timeout(function() {Alert.closeAlert()}, 5000)
 				})
+
 			}
 		}
 	})

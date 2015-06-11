@@ -3,13 +3,13 @@ angular.module('foretControllers', ['foretServices'])
 		var content = this
 
 		content.alertType = function () {
-			return Alert.alert.type
+			return Alert.type
 		}
 		content.alertMsg = function () {
-			return Alert.alert.msg
+			return Alert.msg
 		}
 		content.alertStatus = function () {
-			return Alert.alert.status
+			return Alert.status
 		}
 		content.alertClose = function () {
 			Alert.closeAlert()
@@ -32,6 +32,7 @@ angular.module('foretControllers', ['foretServices'])
 		var header = this
 
 		header.positions = Position.positions
+		// console.log(Auth.userRole)
 		Session.getSession().then(function () {
 			if (Auth.isAuthenticated)
 				$state.go('app.signed')
@@ -54,9 +55,7 @@ angular.module('foretControllers', ['foretServices'])
 					}
 					$http.post('/signup', userData)
 					.success(function (data, status, headers, config) {
-						Auth.isAuthenticated = true
-						Auth.userNickname = data.user.nickname
-						Auth.userRole = data.user.role
+						Auth.create(data.nickname, data.role)
 						$modalInstance.close()
 						$state.go('app.signed')
 						Alert.addAlert('success', 'Welcome to our team!')
@@ -69,6 +68,7 @@ angular.module('foretControllers', ['foretServices'])
 					$state.go('app')
 					$modalInstance.dismiss('cancel')
 				}
+				$state.go('app')
 			},
 			windowClass: 'center-modal'
 		})
@@ -83,9 +83,7 @@ angular.module('foretControllers', ['foretServices'])
 				$scope.logUser = function (userData) {
 					$http.post('/signin', userData)
 					.success(function (data, status, headers, config) {
-						Auth.isAuthenticated = true
-						Auth.userNickname = data.user.nickname
-						Auth.userRole = data.user.role
+						Auth.create(data.nickname, data.role)
 						$modalInstance.close()
 						$state.go('app.signed')
 					})
@@ -105,6 +103,7 @@ angular.module('foretControllers', ['foretServices'])
 						windowClass: 'center-modal'
 					})
 				}
+				$state.go('app')
 			},
 			windowClass: 'center-modal'
 		})
@@ -130,13 +129,15 @@ angular.module('foretControllers', ['foretServices'])
 		}
 	})
 
-	.controller("SignedCtrl", function ($stateParams, $state, $http, $scope, $modal, Auth) {
+	.controller("SignedCtrl", function ($state, $http, $scope, $modal, Auth) {
 		var signed = this;
 
+		$scope.showDashboardBtn = !!(Auth.userRole === 'admin')
 		$scope.user = Auth.userNickname
 		$scope.logout = function () {
 			$http.get('/logout')
 				.then(function (res) {
+					Auth.destroy()
 					$state.go('app')
 				})
 		}
@@ -182,4 +183,14 @@ angular.module('foretControllers', ['foretServices'])
 
 	.controller('ContactCtrl', function () {
 
+	})
+
+	.controller('DashboardCtrl', function ($http, $scope) {
+
+		$scope.users = []
+		$http.get('/dashboard/users')
+			.success(function (data) {
+				console.log(data)
+				$scope.users = data
+			})
 	})
