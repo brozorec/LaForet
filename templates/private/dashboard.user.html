@@ -1,0 +1,23 @@
+<div>
+	<div class="panel panel-success" style="margin: 0px">
+		<div class="panel-heading">
+			<div class="panel-title text-center">Modify</div>
+		</div>
+		<div class="panel-body">
+			<form class="form-horizontal" ng-submit="submitModification(newUserData)">
+				<div style="margin-bottom: 5px">
+					Nickname<input class="form-control" type="text" ng-model="newUserData.nickname">
+				</div>
+				<div style="margin-bottom: 5px">
+					Role<input class="form-control" type="text" ng-model="newUserData.role">
+				</div>
+				<div style="margin-bottom: 5px">
+					Email<input class="form-control" type="text" ng-model="newUserData.email">
+				</div>
+				<div>
+					<button type="submit" class="btn btn-success btn-block">Modify</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

@@ -42,6 +42,13 @@ var smtpTransport = nodemailer.createTransport('SMTP', {
 	}
 })
 
+var authAdmin = function (req, res, next) {
+	if (req.session.userRole === 'admin')
+		next()
+	else
+		res.send('Access denied')
+}
+
 app.get('/session', function (req, res) {
 	if (req.session.nickname)
 		res.send({'nickname':req.session.nickname, 'role':req.session.userRole})
@@ -49,15 +56,34 @@ app.get('/session', function (req, res) {
 		res.send()
 })
 
-app.get('/dashboard/users', function (req, res) {
+app.get('/dashboard/users', authAdmin, function (req, res) {
 	var usersArray = []
 
 	User.find({}, function (err, users) {
 		users.forEach(function (user) {
-			// console.log(user)
 			usersArray.push({'_id': user._id, 'nickname': user.user.nickname, 'role': user.user.role, 'email': user.credentials.email})
 		})
 		res.send(usersArray)
+	})
+})
+
+app.delete('/dashboard/users', authAdmin, function (req, res) {
+	var userId = req.query.userid
+
+	User.find({'_id': userId}).remove(function () {
+		res.send('deleted')
+	})
+})
+
+app.post('/dashboard/users', authAdmin, function (req, res) {
+	var userId = req.body.userid
+
+	User.find({'_id': userId}, function (err, userData) {
+		userData[0].credentials.email = req.body.email
+		userData[0].user.nickname = req.body.nickname
+		userData[0].user.role = req.body.role
+		userData[0].save()
+		res.send('modified')
 	})
 })
 
@@ -169,17 +195,4 @@ app.use(function(req, res, next) {
 	// next()
 });
 
-// app.post('/signin', function (req, res) {
-
-// 	// console.log(req.body)
-// 	User.find(req.body, function (err, user) {
-// 		// console.log(user)
-// 		if (user.length == 0)
-// 			res.status(422).send('Invalid nickname or password!');
-// 		else {
-// 			req.session.nickname = req.body.nickname;
-// 			res.send(user[0]);
-// 		}
-// 	});
-// });
 

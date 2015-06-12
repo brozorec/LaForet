@@ -185,12 +185,41 @@ angular.module('foretControllers', ['foretServices'])
 
 	})
 
-	.controller('DashboardCtrl', function ($http, $scope) {
+	.controller('DashboardCtrl', function ($http, $scope, $modal) {
 
 		$scope.users = []
-		$http.get('/dashboard/users')
+		var fetchUsers = function () {
+			$http.get('/dashboard/users')
 			.success(function (data) {
-				console.log(data)
 				$scope.users = data
 			})
+		}
+		fetchUsers()
+		$scope.deleteUser = function (userId) {
+			$http.delete('/dashboard/users', {params: {'userid': userId}})
+				.success(function (data) {
+					fetchUsers()
+				})
+		}
+
+		$scope.modifyUser = function (userData) {
+			$modal.open({
+				templateUrl: 'templates/private/dashboard.user.html',
+				controller: function ($scope, $modalInstance) {
+					$scope.newUserData = {
+						'userid': userData._id,
+						'nickname': userData.nickname,
+						'role': userData.role,
+						'email': userData.email
+					}
+					$scope.submitModification = function (newUserData) {
+						$http.post('/dashboard/users', newUserData)
+							.success(function (data) {
+								fetchUsers()
+								$modalInstance.close()
+							})
+					}
+				}
+			})
+		}
 	})

@@ -6,12 +6,21 @@
 			<td><h4>Nickname</h4></td>
 			<td><h4>Role</h4></td>
 			<td><h4>Email</h4></td>
+			<td></td>
 		</tr>
 		<tr ng-repeat="user in users">
 			<td>{{user._id}}</td>
 			<td>{{user.nickname}}</td>
 			<td>{{user.role}}</td>
 			<td>{{user.email}}</td>
+			<td>
+				<div class="btn-group">
+					<button type="button" class="btn btn-success" ng-click="modifyUser(user)">Modify</button>
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn btn-danger" ng-click="deleteUser(user._id)">Delete</button>
+				</div>
+			</td>
 		</tr>
 	</table>
 </div>
